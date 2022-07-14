@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Dapper;
 using Npgsql;
+using TraindingApi.WebModel;
 
 namespace TraindingApi.Data;
 
@@ -35,7 +36,7 @@ public class Repository : IDisposable
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        Connection.Dispose();
     }
 
     public async Task<Profile> CreateProfile(Profile profile)
@@ -47,5 +48,33 @@ public class Repository : IDisposable
             goal = profile.Goal
         });
         return profile;
+    }
+
+    public async Task SetGoal(string user, int goal)
+    {
+        await Connection.ExecuteAsync(@"update profiles set ""Goal""= @goal where ""Id"" = @user ", new
+        {
+            user, goal
+        });
+    }
+
+    public async Task SetTag(ProfileTagModel tag)
+    {
+        if (tag.IsSet)
+        {
+            await Connection.ExecuteAsync(@"insert into profile_tags values(@user, @tag)", new
+            {
+                user = tag.User,
+                tag = tag.Tag
+            });
+        }
+        else
+        {
+            await Connection.ExecuteAsync(@"delete from profile_tags where profile_id = @user and tag_id = @tag", new
+            {
+                user = tag.User,
+                tag = tag.Tag
+            });
+        }
     }
 }

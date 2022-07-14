@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TraindingApi.Data;
+using TraindingApi.WebModel;
 
 namespace TraindingApi.Controllers;
 
@@ -33,5 +34,19 @@ public class ProfileController : ControllerBase
     {
         var dbProfile = await _repo.CreateProfile(profile);
         return Ok(dbProfile);
+    }
+    
+    [HttpPost("goal")]
+    public async Task<ActionResult> SetGoal(ProfileGoalModel goal)
+    {
+        await _repo.SetGoal(goal.Id, goal.Goal);
+        return Ok();
+    }
+    
+    [HttpPost("tag")]
+    public async Task<ActionResult> SetTag(ProfileTagModel tag)
+    {
+        await _repo.SetTag(tag);
+        return Ok();
     }
 }

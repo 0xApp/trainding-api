@@ -22,11 +22,14 @@ public class Repository : IDisposable
     public async Task<ProfileWithTags> GetProfileById(string id)
     {
         var profile = await Connection.QueryFirstOrDefaultAsync<ProfileWithTags>(@"SELECT p.* FROM profiles p where p.""Id"" = @id", new { id });
-        profile.Tags = await Connection.QueryAsync<string>(@"select pt.tag_id from profile_tags pt where pt.profile_id = @id", new
-        {
-            id
-        });
 
+        if (profile != null)
+        {
+            profile.Tags = await Connection.QueryAsync<string>(@"select pt.tag_id from profile_tags pt where pt.profile_id = @id", new
+            {
+                id
+            });
+        }
         return profile;
     }
 

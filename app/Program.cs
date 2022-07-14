@@ -19,7 +19,7 @@ builder.Services.AddCors(o =>
     });
 });
 
-builder.Services.AddScoped<DbCon>();
+builder.Services.AddScoped<Repository>();
 
 var app = builder.Build();
 

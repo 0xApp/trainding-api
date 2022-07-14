@@ -7,9 +7,9 @@ namespace TraindingApi.Controllers;
 [Route("[controller]")]
 public class CourseController : ControllerBase
 {
-    private readonly DbCon _conn;
+    private readonly Repository _conn;
 
-    public CourseController(DbCon conn)
+    public CourseController(Repository conn)
     {
         _conn = conn;
     }

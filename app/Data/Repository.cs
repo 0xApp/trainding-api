@@ -77,4 +77,38 @@ public class Repository : IDisposable
             });
         }
     }
+
+    public Task<IEnumerable<UserCourseView>> GetUserCourse(string id)
+    {
+        return Connection.QueryAsync<UserCourseView>(
+            @"select c.*, coalesce(pc.progress, 0) as progress, coalesce(pc.state, 'NOT_STARTED') as state from courses c 
+left join profile_courses pc on c.""Id"" = pc.course_id 
+where exists (select 1 from course_tags ct where ct.course_id = c.""Id"" and ct.tag_id in (select pt.tag_id from profile_tags pt where pt.profile_id = @user) fetch first 1 rows only);",
+            new
+            {
+                user = id
+            });
+    }
+
+    public async Task UpdateUserCourse(UserCourseModel request)
+    {
+        if (request.State == "JOINED")
+        {
+            await Connection.ExecuteAsync("insert into profile_courses values(@user, @course, @state, 0)", new
+            {
+                user = request.User,
+                course = request.Course,
+                state = request.State,
+            });
+        }
+        else
+        {
+            await Connection.ExecuteAsync("update profile_courses set state = @state where course_id = @course AND profile_id = @user", new
+            {
+                user = request.User,
+                course = request.Course,
+                state = request.State,
+            });
+        }
+    }
 }

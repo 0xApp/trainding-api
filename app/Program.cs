@@ -10,20 +10,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(o =>
 {
-    o.AddPolicy("Max-Age-Policy", p =>
+    o.AddDefaultPolicy(p =>
     {
         p.AllowAnyHeader();
         p.AllowAnyMethod();
         p.AllowAnyOrigin();
+        p.SetIsOriginAllowed(o => true);
         p.SetPreflightMaxAge(TimeSpan.FromDays(1));
     });
 });
 
-builder.Services.AddScoped<Repository>();
-
+builder.Services.AddScoped<Repository>();;
 var app = builder.Build();
 
-app.UseCors("Max-Age-Policy");
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

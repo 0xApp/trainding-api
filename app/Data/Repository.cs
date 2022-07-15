@@ -111,4 +111,22 @@ where exists (select 1 from course_tags ct where ct.course_id = c.""Id"" and ct.
             });
         }
     }
+
+    public Task<IEnumerable<ChatView>> GetChats(string from, string to)
+    {
+        return  Connection.QueryAsync<ChatView>("select * from chats c where (c.from_user = @from and c.to_user = @to) or (c.from_user = @to and c.to_user = @from) order by c.time desc", new
+        {
+            from, to
+        });
+    }
+
+    public Task CreateChat(ChatModel chat)
+    {
+        return Connection.ExecuteAsync("insert into chats(from_user, to_user, message) values(@from, @to, @message)", new
+        {
+            chat.from,
+            chat.to,
+            chat.message
+        });
+    }
 }

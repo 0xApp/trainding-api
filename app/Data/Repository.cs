@@ -129,4 +129,9 @@ where exists (select 1 from course_tags ct where ct.course_id = c.""Id"" and ct.
             chat.message
         });
     }
+
+    public Task<IEnumerable<string>> GetBuddies(string id)
+    {
+        return Connection.QueryAsync<string>(@"select p.""Id"" from profiles p");
+    }
 }

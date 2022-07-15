@@ -49,4 +49,10 @@ public class ProfileController : ControllerBase
         await _repo.SetTag(tag);
         return Ok();
     }
+    
+    [HttpGet("buddies")]
+    public async Task<IEnumerable<string>> GetBuddies(string id)
+    {
+        return await _repo.GetBuddies(id);
+    }
 }
